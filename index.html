@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión con Firebase</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Inicia Sesión con Google</h1>
+    <div class="auth-container">
+        <button id="login-btn" class="btn">Iniciar Sesión</button>
+        <button id="logout-btn" class="btn" style="display:none;">Cerrar Sesión</button>
+        <p id="user-info"></p>
+    </div>
+
+    <script type="module">
+        // Importar las funciones necesarias del SDK desde Firebase CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+        import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+
+        // Configuración de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyB2yN_W0-8KPsUSeuTHW_8-UowJrtf1Tzw",
+            authDomain: "ejemplopaginawebborrar.firebaseapp.com",
+            projectId: "ejemplopaginawebborrar",
+            storageBucket: "ejemplopaginawebborrar.appspot.com",
+            messagingSenderId: "866708912226",
+            appId: "1:866708912226:web:bc78caf847800fcf8ff93b",
+            measurementId: "G-4SJC24XDKL"
+        };
+
+        // Inicializar Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        // Seleccionar elementos del DOM
+        const loginBtn = document.getElementById('login-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+        const userInfo = document.getElementById('user-info');
+
+        // Proveedor de autenticación de Google
+        const provider = new GoogleAuthProvider();
+
+        // Iniciar sesión
+        loginBtn.addEventListener('click', () => {
+            signInWithPopup(auth, provider)
+                .then((result) => {
+                    const user = result.user;
+                    userInfo.textContent = `Bienvenido, ${user.displayName}`;
+                    loginBtn.style.display = 'none';
+                    logoutBtn.style.display = 'inline';
+                })
+                .catch((error) => {
+                    console.error('Error de autenticación', error);
+                });
+        });
+
+        // Cerrar sesión
+        logoutBtn.addEventListener('click', () => {
+            signOut(auth)
+                .then(() => {
+                    userInfo.textContent = '';
+                    loginBtn.style.display = 'inline';
+                    logoutBtn.style.display = 'none';
+                })
+                .catch((error) => {
+                    console.error('Error al cerrar sesión', error);
+                });
+        });
+    </script>
+</body>
+</html>
